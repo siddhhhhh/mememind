@@ -178,5 +178,14 @@ def get_og_memes():
         return jsonify({"error": "Could not retrieve OG memes"}), 500
 
 
+@app.route("/")
+def home():
+    return "Hello! Your Flask server is running 🎉"
+
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204  # empty response
+
+
 if __name__ == '__main__':
     app.run(debug=True)
