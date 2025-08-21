@@ -14,33 +14,6 @@ OG Templates Page: Browse original meme templates available in static/og_memes.
 Modern UI: Built with Next.js App Router + TailwindCSS + Framer Motion animations.
 Backend: Flask API with Pillow (PIL) for image manipulation.
 
-project-root/
-│
-├── backend/
-│   ├── app.py                  # Flask backend
-│   ├── static/
-│   │   ├── meme_templates/     # Meme template images
-│   │   ├── latest_memes/       # AI-generated memes
-│   │   └── og_memes/           # Original meme templates
-│   └── .env                    # GEMINI_API_KEY stored here
-│
-├── frontend/
-│   ├── app/
-│   │   ├── page.tsx            # Home (Meme Generator)
-│   │   ├── latest/page.tsx     # Latest memes
-│   │   └── templates/page.tsx  # OG templates
-│   ├── components/
-│   │   ├── Navbar.tsx
-│   │   ├── Footer.tsx
-│   │   └── MemeCard.tsx
-│   ├── lib/config.ts           # API_BASE = Flask server URL
-│   ├── styles/globals.css
-│   ├── next.config.mjs
-│   ├── package.json
-│   └── tailwind.config.js
-│
-└── README.md
-
 ⚙️ Setup Instructions
 1️⃣ Backend (Flask)
 
@@ -116,20 +89,7 @@ Free Gemini API limits (AI Studio free tier):
 In development, React/Next.js may double API calls because of Strict Mode.
 This disappears in production builds.
 
-For images from Flask to work with next/image, update next.config.mjs:
-const nextConfig = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: "http",
-        hostname: "127.0.0.1",
-        port: "5000",
-        pathname: "/static/**",
-      },
-    ],
-  },
-};
-export default nextConfig;
+
 
 📜 License
 MIT License – free to use and modify.
