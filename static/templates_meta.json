@@ -1,0 +1,261 @@
+{
+  "ChillGuy.jpg": {
+    "name": "Chill Guy",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["chill", "unbothered", "calm", "indifferent"],
+    "use_cases": ["dismissing pressure", "staying cool under chaos", "casual confidence"],
+    "caption_style": "Single witty line. Conveys 'I don't really care'.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 80}
+    ]
+  },
+  "Jhetalal_thinking.jpg": {
+    "name": "Jethalal Thinking",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["confused", "pondering", "scheming", "overthinking"],
+    "use_cases": ["overthinking a small problem", "weighing absurd options", "plotting"],
+    "caption_style": "Inner-monologue style. The character is deep in thought about something silly.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 90}
+    ]
+  },
+  "akshay_creepy_smile copy.jpg": {
+    "name": "Akshay Creepy Smile",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["smug", "mischievous", "knowing", "schadenfreude"],
+    "use_cases": ["enjoying someone else's struggle", "found a loophole", "secretly winning"],
+    "caption_style": "Implies you know something others don't, with a smirk.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 80}
+    ]
+  },
+  "balloon.jpg": {
+    "name": "Balloon",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["fragile", "anxious", "tense", "dramatic"],
+    "use_cases": ["one wrong move and it's over", "fragile situations", "high stakes"],
+    "caption_style": "Single line about something hanging by a thread.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 80}
+    ]
+  },
+  "bas_karo_bhai.jpg": {
+    "name": "Bas Karo Bhai",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["exasperated", "fed_up", "tired", "annoyed"],
+    "use_cases": ["had enough of nonsense", "begging it to stop", "overload"],
+    "caption_style": "Begging for something to stop. 'Bas karo bhai' energy.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 90}
+    ]
+  },
+  "champakXdrake.jpg": {
+    "name": "Champak x Drake",
+    "format": "drake",
+    "panels": 2,
+    "emotions": ["preference", "comparison", "rejection", "approval"],
+    "use_cases": ["comparing two options", "rejecting old way for new", "team A vs team B"],
+    "caption_style": "Two lines: top is the rejected option, bottom is the preferred option. Same theme, opposite stance.",
+    "text_zones": [
+      {"id": "top", "position": "top_right_panel", "max_chars": 60},
+      {"id": "bottom", "position": "bottom_right_panel", "max_chars": 60}
+    ]
+  },
+  "champak_aehosyari.jpg": {
+    "name": "Champak Aehosyari",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["warning", "alarm", "alert", "dramatic"],
+    "use_cases": ["sounding the alarm", "warning others", "dramatic alert"],
+    "caption_style": "An urgent warning, slightly comedic. Champak is alerting people.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 90}
+    ]
+  },
+  "champak_hiding.jpg": {
+    "name": "Champak Hiding",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["avoidance", "embarrassed", "scared", "hiding"],
+    "use_cases": ["avoiding responsibility", "hiding from a problem", "wanting to disappear"],
+    "caption_style": "About wanting to disappear or avoid a situation.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 85}
+    ]
+  },
+  "champak_sahibola.jpg": {
+    "name": "Champak Sahi Bola",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["agreement", "validated", "approval", "facts"],
+    "use_cases": ["someone made a great point", "facts said no lies", "absolutely correct"],
+    "caption_style": "Strong agreement with a statement someone just made.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 90}
+    ]
+  },
+  "disapointed_Bald_guy.jpg": {
+    "name": "Disappointed Bald Guy",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["disappointed", "let_down", "sad", "regretful"],
+    "use_cases": ["expected better", "let down by something", "regret"],
+    "caption_style": "About being let down by something or someone.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 85}
+    ]
+  },
+  "distracted_boyfriend.jpg": {
+    "name": "Distracted Boyfriend",
+    "format": "labels_3",
+    "panels": 1,
+    "emotions": ["temptation", "switching", "distraction", "preference"],
+    "use_cases": ["abandoning A for shiny new B", "distracted from current obligation", "trend hopping"],
+    "caption_style": "Three labels: BOYFRIEND (you/subject), GIRLFRIEND (current thing being ignored), OTHER WOMAN (shiny new thing). Each short, 1-3 words ideal.",
+    "text_zones": [
+      {"id": "boyfriend", "position": "label_boyfriend", "max_chars": 25},
+      {"id": "girlfriend", "position": "label_girlfriend", "max_chars": 25},
+      {"id": "other_woman", "position": "label_other_woman", "max_chars": 25}
+    ]
+  },
+  "doge.jpg": {
+    "name": "Doge",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["wholesome", "amused", "wow", "cute"],
+    "use_cases": ["expressing wonder", "wholesome reaction", "much wow energy"],
+    "caption_style": "Doge speak: 'much X', 'such Y', 'very Z', 'wow'.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 80}
+    ]
+  },
+  "drake.jpg": {
+    "name": "Drake Hotline Bling",
+    "format": "drake",
+    "panels": 2,
+    "emotions": ["preference", "comparison", "rejection", "approval"],
+    "use_cases": ["preferring one option over another", "rejecting bad approach for good"],
+    "caption_style": "Two lines: top is rejected, bottom is preferred. Parallel structure works best.",
+    "text_zones": [
+      {"id": "top", "position": "top_right_panel", "max_chars": 60},
+      {"id": "bottom", "position": "bottom_right_panel", "max_chars": 60}
+    ]
+  },
+  "girl_asks_right.jpg": {
+    "name": "Girl Asks Right Question",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["curious", "asking", "innocent", "questioning"],
+    "use_cases": ["asking the obvious question", "innocent curiosity exposes truth"],
+    "caption_style": "A question that exposes the absurdity of a situation.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 90}
+    ]
+  },
+  "jheta_oncemore.jpg": {
+    "name": "Jethalal Once More",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["repetition", "tired", "again", "dejavu"],
+    "use_cases": ["here we go again", "same problem repeats", "groundhog day energy"],
+    "caption_style": "About repeating the same situation.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 90}
+    ]
+  },
+  "jheta_staring_iyer.jpg": {
+    "name": "Jethalal Staring Iyer",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["staring", "judging", "disbelief", "side_eye"],
+    "use_cases": ["judging silently", "staring in disbelief", "side-eye reaction"],
+    "caption_style": "When someone says/does something so dumb you just stare.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 90}
+    ]
+  },
+  "kya_tapleek.jpg": {
+    "name": "Kya Tap Leek",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["confused", "what", "huh", "lost"],
+    "use_cases": ["confused reaction", "lost in conversation", "what is happening"],
+    "caption_style": "Confused 'what is even happening' energy.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 90}
+    ]
+  },
+  "mr_incredible.jpg": {
+    "name": "Mr Incredible",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["serious", "stern", "concerned", "explaining"],
+    "use_cases": ["serious explanation", "intervention", "stern advice"],
+    "caption_style": "Serious tone, like he's explaining something heavy.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 90}
+    ]
+  },
+  "rajpal_abmaichaltahu.jpg": {
+    "name": "Rajpal Ab Mai Chalta Hu",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["leaving", "done", "giving_up", "exit"],
+    "use_cases": ["I'm out", "done with this", "leaving the situation"],
+    "caption_style": "About leaving/exiting a situation. 'Ab mai chalta hu' energy.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 90}
+    ]
+  },
+  "success_kid.jpg": {
+    "name": "Success Kid",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["victory", "success", "triumph", "pride"],
+    "use_cases": ["small wins", "got away with it", "personal victory"],
+    "caption_style": "Top: setup of a small daily struggle. Bottom: the small victory.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 60},
+      {"id": "bottom", "position": "bottom", "max_chars": 60}
+    ]
+  },
+  "tmkoc_bandkar_bandkar.jpg": {
+    "name": "TMKOC Band Kar Band Kar",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["stop_it", "annoyed", "enough", "rejection"],
+    "use_cases": ["telling someone to stop", "rejecting an idea hard", "shut it down"],
+    "caption_style": "Telling someone or something to stop, hard.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 90}
+    ]
+  },
+  "twobuttons.jpg": {
+    "name": "Two Buttons",
+    "format": "two_buttons",
+    "panels": 1,
+    "emotions": ["dilemma", "choice", "anxiety", "decision"],
+    "use_cases": ["impossible choice", "two equally bad options", "tough decision"],
+    "caption_style": "Two button labels (one per button), each a competing choice. Top text optional context.",
+    "text_zones": [
+      {"id": "button_left", "position": "button_left", "max_chars": 30},
+      {"id": "button_right", "position": "button_right", "max_chars": 30}
+    ]
+  },
+  "welcome_laughing.jpg": {
+    "name": "Welcome Laughing",
+    "format": "single",
+    "panels": 1,
+    "emotions": ["welcoming", "schadenfreude", "amused", "mocking"],
+    "use_cases": ["welcoming someone to suffering you've already endured", "told you so"],
+    "caption_style": "About welcoming someone into a frustrating reality you already know.",
+    "text_zones": [
+      {"id": "top", "position": "top", "max_chars": 90}
+    ]
+  }
+}
