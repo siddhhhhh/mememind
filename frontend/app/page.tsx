@@ -530,7 +530,7 @@ function UploadDrop({
 }: {
   preview: string | null
   onPick: (f: File | null) => void
-  fileRef: React.RefObject<HTMLInputElement>
+  fileRef: React.RefObject<HTMLInputElement | null>
 }) {
   return (
     <div

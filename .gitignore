@@ -3,3 +3,12 @@ venv/
 __pycache__/
 .claude/
 ps.txt
+
+# Local-only generated artefacts
+static/telemetry.jsonl
+static/latest_memes/
+static/imgflip_cache/
+static/uploads/
+scripts/.eval_*.json
+scripts/prompt_ab_results.json
+scripts/clip_results.json

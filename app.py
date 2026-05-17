@@ -38,6 +38,8 @@ from flask import Flask, abort, jsonify, request, send_file, url_for
 from flask_cors import CORS
 from PIL import Image, ImageDraw, ImageFont
 
+import telemetry
+
 # Optional provider SDKs — degrade gracefully if missing.
 try:
     from groq import Groq
@@ -79,6 +81,9 @@ app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10 MB upload cap
 
 GROQ_KEY = os.getenv("GROQ_API_KEY")
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
+# Opt-in LLM reranker on the retrieval path. Adds ~400ms per request but lifts
+# top-1 template accuracy from 29% -> 54% in offline eval (scripts/eval.py).
+USE_RERANKER = os.getenv("USE_RERANKER", "0").lower() in ("1", "true", "yes")
 
 groq_client = Groq(api_key=GROQ_KEY) if (Groq and GROQ_KEY) else None
 
@@ -331,11 +336,13 @@ def embed_query(text: str) -> np.ndarray | None:
             genai_types.EmbedContentConfig(task_type="RETRIEVAL_QUERY")
             if genai_types else None
         )
-        resp = gemini_client.models.embed_content(
-            model=GEMINI_EMBED_MODEL,
-            contents=text,
-            config=cfg,
-        )
+        with telemetry.call("gemini", GEMINI_EMBED_MODEL, "embed_query") as t:
+            resp = gemini_client.models.embed_content(
+                model=GEMINI_EMBED_MODEL,
+                contents=text,
+                config=cfg,
+            )
+            t.set_response(resp)
         v = np.asarray(resp.embeddings[0].values, dtype=np.float32)
         n = float(np.linalg.norm(v))
         return v / n if n > 0 else None
@@ -364,11 +371,92 @@ def rag_rank(topic: str, analysis: dict, k: int = 12) -> list[tuple[str, float]]
     return [(EMB_STORE.ids[i], float(sims[i])) for i in idx_sorted]
 
 
+def rerank_with_llm(
+    topic: str,
+    analysis: dict,
+    candidates: list[tuple[str, float]],
+    pool: dict[str, dict] | None = None,
+    top_k: int = 10,
+) -> list[tuple[str, float]]:
+    """LLM reranker over RAG candidates.
+
+    Takes the retriever's top-N (template_id, sim) candidates and asks Groq
+    Llama-3.3-70B to rescore them on a 0-10 scale by topic fit, using each
+    template's curated metadata as context. Standard retriever -> reranker
+    pattern: retriever gives recall, reranker gives precision.
+
+    Returns the reranked list as (template_id, llm_score). On any failure
+    (no Groq, bad JSON, network), returns the input candidates unchanged so
+    callers can rely on a non-empty list.
+    """
+    if not candidates:
+        return []
+    pool = pool if pool is not None else _all_templates()
+    # Trim down so the prompt stays under a few hundred tokens
+    short = candidates[: min(20, len(candidates))]
+
+    lines = []
+    for i, (tid, sim) in enumerate(short, 1):
+        meta = pool.get(tid, {})
+        emos = ", ".join(meta.get("emotions", [])) or "—"
+        uc = "; ".join(meta.get("use_cases", [])[:2]) or "—"
+        lines.append(
+            f"[{i}] {meta.get('name', tid)}  "
+            f"(emotions: {emos}; use_cases: {uc}; sim: {sim:.3f})"
+        )
+    rendered = "\n".join(lines)
+
+    system = (
+        "You are reranking meme templates for a given topic. "
+        "Pick templates whose mood/scenario fits the topic — not just keyword overlap. "
+        "Return strict JSON only."
+    )
+    user = f"""Topic: "{topic}"
+Tone: {analysis.get('tone', '')}
+Emotion: {analysis.get('emotion', '')}
+Cultural context: {analysis.get('cultural_context', '')}
+
+Candidate templates (1-indexed):
+{rendered}
+
+Rate each candidate 0-10 on how well it fits THIS specific topic.
+Return JSON:
+{{"rankings": [{{"index": <1-based int>, "score": <0-10 float>}}]}}
+Include ALL candidates. No prose, no markdown."""
+
+    try:
+        result = _groq_json(system, user, temperature=0.2, op="rerank")
+    except Exception as e:
+        app.logger.warning("LLM rerank failed (%s); returning retriever order.", e)
+        return short
+
+    rankings = result.get("rankings", []) if isinstance(result, dict) else []
+    by_idx: dict[int, float] = {}
+    for r in rankings:
+        if not isinstance(r, dict):
+            continue
+        try:
+            idx = int(r.get("index"))
+            sc = float(r.get("score", 0.0))
+        except (TypeError, ValueError):
+            continue
+        by_idx[idx] = sc
+
+    rescored: list[tuple[str, float]] = []
+    for i, (tid, sim) in enumerate(short, 1):
+        # If the LLM skipped a candidate, keep it but at a low score so it falls back.
+        sc = by_idx.get(i, sim * 5.0)  # rough scale match
+        rescored.append((tid, sc))
+    rescored.sort(key=lambda x: -x[1])
+    return rescored[:top_k]
+
+
 # ---------------------------------------------------------------------------
 # LLM helpers
 # ---------------------------------------------------------------------------
 
-def _groq_json(system: str, user: str, *, temperature: float = 0.9) -> dict:
+def _groq_json(system: str, user: str, *, temperature: float = 0.9,
+               op: str = "groq_json") -> dict:
     """Call Groq in JSON mode with one retry that explicitly nags about valid JSON."""
     if not groq_client:
         raise RuntimeError("Groq not configured")
@@ -380,16 +468,18 @@ def _groq_json(system: str, user: str, *, temperature: float = 0.9) -> dict:
     last_err: Exception | None = None
     for attempt in range(2):
         try:
-            resp = groq_client.chat.completions.create(
-                model=GROQ_MODEL,
-                messages=[
-                    {"role": "system", "content": hardened_system},
-                    {"role": "user", "content": user},
-                ],
-                response_format={"type": "json_object"},
-                temperature=temperature if attempt == 0 else 0.4,
-                max_tokens=512,
-            )
+            with telemetry.call("groq", GROQ_MODEL, op) as t:
+                resp = groq_client.chat.completions.create(
+                    model=GROQ_MODEL,
+                    messages=[
+                        {"role": "system", "content": hardened_system},
+                        {"role": "user", "content": user},
+                    ],
+                    response_format={"type": "json_object"},
+                    temperature=temperature if attempt == 0 else 0.4,
+                    max_tokens=512,
+                )
+                t.set_response(resp)
             content = resp.choices[0].message.content or ""
             try:
                 return json.loads(content)
@@ -403,13 +493,15 @@ def _groq_json(system: str, user: str, *, temperature: float = 0.9) -> dict:
     raise last_err if last_err else RuntimeError("Groq JSON failed")
 
 
-def _gemini_json(prompt: str) -> dict:
+def _gemini_json(prompt: str, *, op: str = "gemini_json") -> dict:
     if not gemini_client:
         raise RuntimeError("Gemini not configured")
-    resp = gemini_client.models.generate_content(
-        model=GEMINI_TEXT_MODEL,
-        contents=prompt,
-    )
+    with telemetry.call("gemini", GEMINI_TEXT_MODEL, op) as t:
+        resp = gemini_client.models.generate_content(
+            model=GEMINI_TEXT_MODEL,
+            contents=prompt,
+        )
+        t.set_response(resp)
     text = (resp.text or "").strip()
     if text.startswith("```"):
         text = text.strip("`")
@@ -437,11 +529,11 @@ Return JSON with this exact shape:
   "keywords": [3-5 short keywords]
 }}"""
     try:
-        return _groq_json(system, user)
+        return _groq_json(system, user, op="analyze")
     except Exception as e:
         app.logger.warning("Groq analyze failed (%s); trying Gemini.", e)
         try:
-            return _gemini_json(system + "\n\n" + user)
+            return _gemini_json(system + "\n\n" + user, op="analyze")
         except Exception as e2:
             app.logger.error("Both analyze providers failed: %s", e2)
             return {
@@ -487,13 +579,22 @@ def pick_template(
         rag_hits = rag_rank(topic, analysis, k=20)
 
     if rag_hits:
+        # Filter against exclude / availability before any rescoring.
+        available = [
+            (tid, sim) for tid, sim in rag_hits
+            if tid not in exclude and tid in pool
+            and _template_image_available(tid, pool[tid])
+        ]
+        if USE_RERANKER and topic and len(available) > 1:
+            # Retriever -> reranker: ask LLM to rescore top candidates by topic fit.
+            available = rerank_with_llm(topic, analysis, available, pool=pool, top_k=10)
+
         scored: list[tuple[float, str]] = []
-        for tid, sim in rag_hits:
-            if tid in exclude or tid not in pool:
-                continue
+        for tid, sim in available:
             meta = pool[tid]
-            if not _template_image_available(tid, meta):
-                continue
+            # When reranker ran, `sim` is already an LLM 0-10 score; emotion bonus
+            # (which is in cosine units, ~0-0.4) becomes negligible — keep it for
+            # consistency / tie-breaking but it won't dominate.
             score = sim + _emotion_bonus(meta, analysis)
             score += random.uniform(0, 0.02)  # tiny jitter to avoid ties on repeat
             scored.append((score, tid))
@@ -578,11 +679,11 @@ Example shape: {example}
 Each value should be plain text. Keep within character hints. No markdown, no extra keys."""
 
     try:
-        result = _groq_json(system, user)
+        result = _groq_json(system, user, op="write_caption")
     except Exception as e:
         app.logger.warning("Groq caption failed (%s); trying Gemini.", e)
         try:
-            result = _gemini_json(system + "\n\n" + user)
+            result = _gemini_json(system + "\n\n" + user, op="write_caption")
         except Exception:
             result = {z["id"]: topic for z in zones}
 
@@ -627,12 +728,12 @@ Make them genuinely different — different jokes, not paraphrases.
 No markdown, no extra commentary."""
 
     try:
-        result = _groq_json(system, user)
+        result = _groq_json(system, user, op="write_captions_n")
         cands = result.get("candidates", [])
     except Exception as e:
         app.logger.warning("Groq write_captions_n failed (%s); trying Gemini.", e)
         try:
-            result = _gemini_json(system + "\n\n" + user)
+            result = _gemini_json(system + "\n\n" + user, op="write_captions_n")
             cands = result.get("candidates", [])
         except Exception:
             cands = []
@@ -695,11 +796,11 @@ Return JSON:
 List ALL candidates in your rankings array. No markdown."""
 
     try:
-        result = _groq_json(system, user, temperature=0.3)
+        result = _groq_json(system, user, temperature=0.3, op="judge_captions")
     except Exception as e:
         app.logger.warning("Groq judge failed (%s); trying Gemini.", e)
         try:
-            result = _gemini_json(system + "\n\n" + user)
+            result = _gemini_json(system + "\n\n" + user, op="judge_captions")
         except Exception:
             # Degenerate: just return the first candidate as winner
             return [{"captions": c, "score": 0.0, "reason": "judge unavailable"}
@@ -963,7 +1064,7 @@ For each panel return:
 Return JSON: {{"panels": [<obj>, <obj>, ...]}} with exactly {n_panels} items."""
 
     try:
-        result = _groq_json(system, user, temperature=1.0)
+        result = _groq_json(system, user, temperature=1.0, op="comic_arc")
     except Exception as e:
         app.logger.warning("Groq comic arc failed (%s); trying Gemini.", e)
         try:
@@ -1040,11 +1141,13 @@ def generate_fresh_image(topic: str, analysis: dict) -> Image.Image:
             genai_types.GenerateContentConfig(response_modalities=["IMAGE"])
             if genai_types else None
         )
-        resp = gemini_client.models.generate_content(
-            model=GEMINI_IMAGE_MODEL,
-            contents=prompt,
-            config=config,
-        )
+        with telemetry.call("gemini", GEMINI_IMAGE_MODEL, "fresh_image") as t:
+            resp = gemini_client.models.generate_content(
+                model=GEMINI_IMAGE_MODEL,
+                contents=prompt,
+                config=config,
+            )
+            t.set_response(resp)
         for part in resp.candidates[0].content.parts:
             inline = getattr(part, "inline_data", None)
             if inline and getattr(inline, "data", None):
@@ -1429,6 +1532,8 @@ def api_regenerate():
     img = render_meme(template_image_path(template_id, meta), meta, captions)
     url = save_meme(img)
     return jsonify({
+        "mode": "smart",
+        "topic": topic,
         "url": url,
         "template": {"id": template_id, "name": meta.get("name"),
                      "format": meta.get("format"),

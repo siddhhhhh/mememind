@@ -46,11 +46,27 @@ def describe_image(client: genai.Client, image_path: str, hint: str) -> str:
         "kind of joke or topic this template works best for. Be concise and "
         "concrete. No preamble."
     )
-    resp = client.models.generate_content(
-        model=VISION_MODEL,
-        contents=[prompt, img],
-    )
-    return (resp.text or "").strip()
+    attempt = 0
+    while True:
+        try:
+            resp = client.models.generate_content(
+                model=VISION_MODEL,
+                contents=[prompt, img],
+            )
+            return (resp.text or "").strip()
+        except Exception as e:
+            msg = str(e)
+            if ("429" in msg or "RESOURCE_EXHAUSTED" in msg) and attempt < 6:
+                # Parse server-suggested retry delay (e.g. "Please retry in 17.2s")
+                import re
+                m = re.search(r"retry in ([\d.]+)s", msg)
+                wait = float(m.group(1)) + 2 if m else 35.0
+                wait = min(wait, 65.0)
+                print(f"  [vision-429] sleeping {wait:.0f}s then retrying...")
+                time.sleep(wait)
+                attempt += 1
+                continue
+            raise
 
 
 def metadata_text(meta: dict) -> str:
@@ -117,10 +133,20 @@ def main() -> None:
     out: dict[str, dict] = (
         json.load(open(OUT_PATH)) if os.path.exists(OUT_PATH) else {}
     )
-    todo = [(tid, meta) for tid, meta in pool.items()
-            if not (out.get(tid) or {}).get("embedding")]
-    print(f"Templates total: {len(pool)}; already cached: {len(pool) - len(todo)}; "
-          f"to do: {len(todo)}")
+    # Re-process entries with no embedding OR a metadata_fallback source
+    # (those got a generic name-only description because vision quota was exhausted).
+    def _needs_work(tid: str) -> bool:
+        entry = out.get(tid) or {}
+        if not entry.get("embedding"):
+            return True
+        return entry.get("source") == "metadata_fallback"
+
+    todo = [(tid, meta) for tid, meta in pool.items() if _needs_work(tid)]
+    fallback_count = sum(
+        1 for tid, _ in todo if (out.get(tid) or {}).get("source") == "metadata_fallback"
+    )
+    print(f"Templates total: {len(pool)}; already good: {len(pool) - len(todo)}; "
+          f"to do: {len(todo)} (of which {fallback_count} are fallback upgrades)")
 
     for idx, (tid, meta) in enumerate(todo, 1):
         # Step 1: description

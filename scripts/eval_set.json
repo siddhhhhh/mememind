@@ -1,0 +1,350 @@
+{
+  "_about": "Curated topic -> labels test set for MemeMind retrieval eval. expected_emotions = labels from the same vocab that templates use, so emotion-overlap@k is a fair retrieval metric. ideal_templates is optional; only set when an obviously-correct template exists in the local pool.",
+  "_emotion_vocab_source": "static/templates_meta.json (union of all 'emotions' lists)",
+  "cases": [
+    {
+      "id": "dev_001",
+      "topic": "debugging a bug at 3 am that turns out to be a missing semicolon",
+      "expected_emotions": ["exasperated", "tired", "fed_up", "annoyed", "done", "regretful"],
+      "ideal_templates": ["bas_karo_bhai.jpg", "disapointed_Bald_guy.jpg"]
+    },
+    {
+      "id": "dev_002",
+      "topic": "arguing with the team about whether to use React or Vue",
+      "expected_emotions": ["preference", "comparison", "dilemma", "choice", "approval", "rejection"],
+      "ideal_templates": ["drake.jpg", "champakXdrake.jpg", "twobuttons.jpg"]
+    },
+    {
+      "id": "dev_003",
+      "topic": "writing tests for code you already shipped to production",
+      "expected_emotions": ["regretful", "embarrassed", "guilty", "schadenfreude", "let_down", "tired"],
+      "ideal_templates": ["disapointed_Bald_guy.jpg"]
+    },
+    {
+      "id": "dev_004",
+      "topic": "code works on my machine but not on staging",
+      "expected_emotions": ["confused", "what", "lost", "huh", "exasperated", "concerned"],
+      "ideal_templates": ["kya_tapleek.jpg", "Jhetalal_thinking.jpg"]
+    },
+    {
+      "id": "dev_005",
+      "topic": "ai assistant wrote half the codebase and i have no idea what it does",
+      "expected_emotions": ["confused", "concerned", "anxious", "what", "lost", "overthinking"],
+      "ideal_templates": ["kya_tapleek.jpg", "Jhetalal_thinking.jpg", "balloon.jpg"]
+    },
+    {
+      "id": "dev_006",
+      "topic": "finally deploying to prod on a friday at 4pm",
+      "expected_emotions": ["anxiety", "tense", "fragile", "anxious", "warning", "alert"],
+      "ideal_templates": ["balloon.jpg", "champak_aehosyari.jpg"]
+    },
+    {
+      "id": "dev_007",
+      "topic": "the moment your pull request finally gets approved",
+      "expected_emotions": ["victory", "success", "triumph", "pride", "validated"],
+      "ideal_templates": ["success_kid.jpg", "champak_sahibola.jpg"]
+    },
+    {
+      "id": "dev_008",
+      "topic": "looking at code i wrote six months ago",
+      "expected_emotions": ["disbelief", "what", "judging", "side_eye", "confused", "regretful"],
+      "ideal_templates": ["jheta_staring_iyer.jpg", "kya_tapleek.jpg"]
+    },
+    {
+      "id": "dev_009",
+      "topic": "junior dev pushes directly to main without a review",
+      "expected_emotions": ["staring", "judging", "side_eye", "disbelief", "stern", "stop_it"],
+      "ideal_templates": ["jheta_staring_iyer.jpg", "tmkoc_bandkar_bandkar.jpg", "mr_incredible.jpg"]
+    },
+    {
+      "id": "dev_010",
+      "topic": "documentation says one thing, code does another",
+      "expected_emotions": ["confused", "what", "huh", "lost", "exasperated"],
+      "ideal_templates": ["kya_tapleek.jpg"]
+    },
+
+    {
+      "id": "work_001",
+      "topic": "this meeting could have been an email",
+      "expected_emotions": ["exasperated", "tired", "fed_up", "annoyed", "done"],
+      "ideal_templates": ["bas_karo_bhai.jpg", "rajpal_abmaichaltahu.jpg"]
+    },
+    {
+      "id": "work_002",
+      "topic": "boss adding a fifth deadline to monday",
+      "expected_emotions": ["fed_up", "tired", "exasperated", "stop_it", "enough", "annoyed"],
+      "ideal_templates": ["bas_karo_bhai.jpg", "tmkoc_bandkar_bandkar.jpg"]
+    },
+    {
+      "id": "work_003",
+      "topic": "asking for a raise after a year of overtime",
+      "expected_emotions": ["asking", "questioning", "curious", "anxious", "tense"],
+      "ideal_templates": ["girl_asks_right.jpg"]
+    },
+    {
+      "id": "work_004",
+      "topic": "i quit and walking out of the office",
+      "expected_emotions": ["leaving", "done", "exit", "giving_up", "fed_up"],
+      "ideal_templates": ["rajpal_abmaichaltahu.jpg"]
+    },
+    {
+      "id": "work_005",
+      "topic": "manager praises me publicly in the all-hands",
+      "expected_emotions": ["victory", "validated", "pride", "approval", "success"],
+      "ideal_templates": ["success_kid.jpg", "champak_sahibola.jpg"]
+    },
+    {
+      "id": "work_006",
+      "topic": "explaining to the client why the timeline slipped",
+      "expected_emotions": ["serious", "stern", "concerned", "explaining"],
+      "ideal_templates": ["mr_incredible.jpg"]
+    },
+    {
+      "id": "work_007",
+      "topic": "back to back zoom meetings for six hours",
+      "expected_emotions": ["tired", "fed_up", "exasperated", "repetition", "dejavu", "again"],
+      "ideal_templates": ["jheta_oncemore.jpg", "bas_karo_bhai.jpg"]
+    },
+    {
+      "id": "work_008",
+      "topic": "remembering to be cool when the wifi cuts during the demo",
+      "expected_emotions": ["chill", "unbothered", "calm", "indifferent"],
+      "ideal_templates": ["ChillGuy.jpg"]
+    },
+
+    {
+      "id": "life_001",
+      "topic": "should i learn rust or just enjoy my weekend",
+      "expected_emotions": ["dilemma", "choice", "decision", "anxiety", "preference"],
+      "ideal_templates": ["twobuttons.jpg"]
+    },
+    {
+      "id": "life_002",
+      "topic": "trying to decide between sleeping and one more episode",
+      "expected_emotions": ["dilemma", "choice", "temptation", "decision", "switching"],
+      "ideal_templates": ["twobuttons.jpg", "distracted_boyfriend.jpg"]
+    },
+    {
+      "id": "life_003",
+      "topic": "switching from my old laptop to a new one",
+      "expected_emotions": ["preference", "switching", "comparison", "approval"],
+      "ideal_templates": ["drake.jpg", "champakXdrake.jpg", "distracted_boyfriend.jpg"]
+    },
+    {
+      "id": "life_004",
+      "topic": "looking at my friend's new car while sitting on my bike",
+      "expected_emotions": ["temptation", "distraction", "switching", "preference"],
+      "ideal_templates": ["distracted_boyfriend.jpg"]
+    },
+    {
+      "id": "life_005",
+      "topic": "promised myself i'd wake up at 6 am, woke up at 11",
+      "expected_emotions": ["disappointed", "let_down", "regretful", "sad"],
+      "ideal_templates": ["disapointed_Bald_guy.jpg"]
+    },
+    {
+      "id": "life_006",
+      "topic": "neighbour blasting music at midnight again",
+      "expected_emotions": ["repetition", "dejavu", "again", "tired", "annoyed"],
+      "ideal_templates": ["jheta_oncemore.jpg"]
+    },
+    {
+      "id": "life_007",
+      "topic": "mom calling exactly when i sit down to eat",
+      "expected_emotions": ["dejavu", "repetition", "again", "tired"],
+      "ideal_templates": ["jheta_oncemore.jpg"]
+    },
+    {
+      "id": "life_008",
+      "topic": "spotting an ex at the supermarket",
+      "expected_emotions": ["avoidance", "hiding", "embarrassed", "scared"],
+      "ideal_templates": ["champak_hiding.jpg"]
+    },
+    {
+      "id": "life_009",
+      "topic": "secretly happy when the loud guy in office gets caught for being late",
+      "expected_emotions": ["schadenfreude", "smug", "mischievous", "knowing", "amused"],
+      "ideal_templates": ["welcome_laughing.jpg", "akshay_creepy_smile copy.jpg"]
+    },
+    {
+      "id": "life_010",
+      "topic": "agreeing wholeheartedly with the chai stall philosophy",
+      "expected_emotions": ["agreement", "validated", "approval", "facts"],
+      "ideal_templates": ["champak_sahibola.jpg"]
+    },
+
+    {
+      "id": "feel_001",
+      "topic": "puppy falls asleep on my chest",
+      "expected_emotions": ["wholesome", "cute", "amused", "wow"],
+      "ideal_templates": ["doge.jpg"]
+    },
+    {
+      "id": "feel_002",
+      "topic": "stranger held the door for me today",
+      "expected_emotions": ["wholesome", "cute", "amused"],
+      "ideal_templates": ["doge.jpg"]
+    },
+    {
+      "id": "feel_003",
+      "topic": "finally finished a side project after two years",
+      "expected_emotions": ["victory", "success", "triumph", "pride"],
+      "ideal_templates": ["success_kid.jpg"]
+    },
+    {
+      "id": "feel_004",
+      "topic": "guests arriving at exactly the worst time",
+      "expected_emotions": ["welcoming", "schadenfreude", "amused", "mocking"],
+      "ideal_templates": ["welcome_laughing.jpg"]
+    },
+
+    {
+      "id": "drama_001",
+      "topic": "be careful, that script will wipe the production database",
+      "expected_emotions": ["warning", "alarm", "alert", "dramatic"],
+      "ideal_templates": ["champak_aehosyari.jpg"]
+    },
+    {
+      "id": "drama_002",
+      "topic": "the moment the wifi goes out during an online exam",
+      "expected_emotions": ["fragile", "anxious", "tense", "dramatic", "anxiety"],
+      "ideal_templates": ["balloon.jpg"]
+    },
+    {
+      "id": "drama_003",
+      "topic": "client wants the whole app redesigned by tomorrow",
+      "expected_emotions": ["fragile", "anxious", "tense", "anxiety", "fed_up"],
+      "ideal_templates": ["balloon.jpg", "bas_karo_bhai.jpg"]
+    },
+    {
+      "id": "drama_004",
+      "topic": "stop adding more requirements mid sprint",
+      "expected_emotions": ["stop_it", "enough", "rejection", "annoyed", "fed_up"],
+      "ideal_templates": ["tmkoc_bandkar_bandkar.jpg", "bas_karo_bhai.jpg"]
+    },
+    {
+      "id": "drama_005",
+      "topic": "scheming about how to skip the family function",
+      "expected_emotions": ["scheming", "mischievous", "smug", "knowing"],
+      "ideal_templates": ["akshay_creepy_smile copy.jpg", "Jhetalal_thinking.jpg"]
+    },
+    {
+      "id": "drama_006",
+      "topic": "thinking deeply about which biryani to order",
+      "expected_emotions": ["pondering", "overthinking", "confused", "scheming"],
+      "ideal_templates": ["Jhetalal_thinking.jpg"]
+    },
+
+    {
+      "id": "social_001",
+      "topic": "scrolling through everyone's vacation pics on monday morning",
+      "expected_emotions": ["sad", "disappointed", "let_down", "regretful"],
+      "ideal_templates": ["disapointed_Bald_guy.jpg"]
+    },
+    {
+      "id": "social_002",
+      "topic": "wait, you actually read the entire terms and conditions",
+      "expected_emotions": ["disbelief", "staring", "judging", "side_eye", "what"],
+      "ideal_templates": ["jheta_staring_iyer.jpg"]
+    },
+    {
+      "id": "social_003",
+      "topic": "explain it like i am five",
+      "expected_emotions": ["asking", "curious", "questioning", "innocent"],
+      "ideal_templates": ["girl_asks_right.jpg"]
+    },
+    {
+      "id": "social_004",
+      "topic": "old friend texts at 2am out of nowhere",
+      "expected_emotions": ["confused", "what", "huh", "curious"],
+      "ideal_templates": ["kya_tapleek.jpg"]
+    },
+    {
+      "id": "social_005",
+      "topic": "everything is fine, i am completely chill",
+      "expected_emotions": ["chill", "unbothered", "calm", "indifferent"],
+      "ideal_templates": ["ChillGuy.jpg"]
+    },
+
+    {
+      "id": "money_001",
+      "topic": "checking my bank balance after the weekend trip",
+      "expected_emotions": ["fragile", "anxious", "anxiety", "tense", "concerned"],
+      "ideal_templates": ["balloon.jpg"]
+    },
+    {
+      "id": "money_002",
+      "topic": "stocks down twenty percent in one day",
+      "expected_emotions": ["disappointed", "sad", "fragile", "anxious", "let_down"],
+      "ideal_templates": ["disapointed_Bald_guy.jpg", "balloon.jpg"]
+    },
+    {
+      "id": "money_003",
+      "topic": "finally got the salary raise i asked for",
+      "expected_emotions": ["victory", "success", "triumph", "pride", "validated"],
+      "ideal_templates": ["success_kid.jpg", "champak_sahibola.jpg"]
+    },
+
+    {
+      "id": "food_001",
+      "topic": "should i cook tonight or order zomato",
+      "expected_emotions": ["dilemma", "choice", "temptation", "decision"],
+      "ideal_templates": ["twobuttons.jpg"]
+    },
+    {
+      "id": "food_002",
+      "topic": "i ordered biryani instead of going to the gym",
+      "expected_emotions": ["temptation", "switching", "distraction", "preference"],
+      "ideal_templates": ["distracted_boyfriend.jpg"]
+    },
+
+    {
+      "id": "abstract_001",
+      "topic": "monday hits different when you slept four hours",
+      "expected_emotions": ["tired", "fed_up", "exasperated", "done"],
+      "ideal_templates": ["bas_karo_bhai.jpg"]
+    },
+    {
+      "id": "abstract_002",
+      "topic": "why is it always the printer",
+      "expected_emotions": ["repetition", "dejavu", "again", "tired", "annoyed"],
+      "ideal_templates": ["jheta_oncemore.jpg"]
+    },
+    {
+      "id": "abstract_003",
+      "topic": "the calm before the launch",
+      "expected_emotions": ["chill", "calm", "unbothered", "anxious", "tense"],
+      "ideal_templates": ["ChillGuy.jpg", "balloon.jpg"]
+    },
+    {
+      "id": "abstract_004",
+      "topic": "i told you not to push to main",
+      "expected_emotions": ["warning", "stern", "serious", "stop_it", "alert"],
+      "ideal_templates": ["champak_aehosyari.jpg", "mr_incredible.jpg"]
+    },
+    {
+      "id": "abstract_005",
+      "topic": "she said yes",
+      "expected_emotions": ["victory", "success", "triumph", "validated", "approval"],
+      "ideal_templates": ["success_kid.jpg"]
+    },
+    {
+      "id": "abstract_006",
+      "topic": "secretly enjoying the rival team losing the match",
+      "expected_emotions": ["schadenfreude", "smug", "mischievous", "amused"],
+      "ideal_templates": ["welcome_laughing.jpg", "akshay_creepy_smile copy.jpg"]
+    },
+    {
+      "id": "abstract_007",
+      "topic": "explaining the difference between sql and nosql for the tenth time",
+      "expected_emotions": ["explaining", "serious", "stern", "tired", "repetition"],
+      "ideal_templates": ["mr_incredible.jpg", "jheta_oncemore.jpg"]
+    },
+    {
+      "id": "abstract_008",
+      "topic": "blackout in the middle of the cricket final",
+      "expected_emotions": ["disbelief", "what", "fragile", "dramatic", "exasperated"],
+      "ideal_templates": ["jheta_staring_iyer.jpg", "balloon.jpg"]
+    }
+  ]
+}
